@@ -15,12 +15,11 @@ datasource db {
 }
 
 model User {
-  id         Int        @default(uuid(7)) @id
+  id         String     @default(uuid(7)) @id
   createdAt  DateTime   @default(now())
   email      String     @unique 
   password   String
   title      String
   profilePic String
   name       String
-  posts      Post[]
 }
