@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from 'generated/prisma';
 import { PrismaService } from '../Prisma/prisma.service';
 import { CreateUserDto, CreateUserResponseDto } from './dto/create-user.dto';
@@ -28,18 +28,9 @@ export class UserService {
 
   async createUser(data: CreateUserDto): Promise<CreateUserResponseDto> {
     const hashed = await bcrypt.hash(data.password, saltOrRounds);
-    try {
-      const user = await this.prisma.user.create({ data: { ...data, password: hashed } });
+    const user = await this.prisma.user.create({ data: { ...data, password: hashed } });
 
-      const { password: _password, ...safeData } = user;
-      return safeData;
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (error.code === 'P2002') {
-        // Prisma error code for unique constraint violation
-        throw new Error('User with this email already exists');
-      }
-      throw error;
-    }
+    const { password: _password, ...safeData } = user;
+    return safeData;
   }
 }
