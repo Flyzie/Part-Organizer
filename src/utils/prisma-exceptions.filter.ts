@@ -13,6 +13,15 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       case 'P2002': {
         response.status(HttpStatus.CONFLICT).json({
           message: `Conflict occurred @ ${request.url}`,
+          pcode: exception.code,
+          details: exception.meta,
+        });
+        break;
+      }
+      case 'P2025': {
+        response.status(HttpStatus.NOT_FOUND).json({
+          message: `Record not found @ ${request.url}`,
+          description: exception.message,
           details: exception.meta,
         });
         break;
@@ -20,7 +29,8 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       default:
         response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
           message: `Internal server error @ ${request.url}`,
-          error: 'Internal Server Error',
+          description: exception.message,
+          details: exception.meta,
         });
     }
   }

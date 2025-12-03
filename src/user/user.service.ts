@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from 'generated/prisma';
 import { PrismaService } from '../Prisma/prisma.service';
 import { CreateUserDto, CreateUserResponseDto } from './dto/create-user.dto';
