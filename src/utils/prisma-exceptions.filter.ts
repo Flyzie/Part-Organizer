@@ -21,6 +21,52 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       case 'P2025': {
         response.status(HttpStatus.NOT_FOUND).json({
           message: `Record not found @ ${request.url}`,
+          pcode: exception.code,
+          description: exception.message,
+          details: exception.meta,
+        });
+        break;
+      }
+      case 'P2003': {
+        response.status(HttpStatus.BAD_REQUEST).json({
+          message: `Bad request @ ${request.url}`,
+          pcode: exception.code,
+          description: exception.message,
+          details: exception.meta,
+        });
+        break;
+      }
+      case 'P1001': {
+        response.status(HttpStatus.SERVICE_UNAVAILABLE).json({
+          message: `Service unavailable @ ${request.url}`,
+          pcode: exception.code,
+          description: exception.message,
+          details: exception.meta,
+        });
+        break;
+      }
+      case 'P2000': {
+        response.status(HttpStatus.BAD_REQUEST).json({
+          message: `String exceeds max length @ ${request.url}`,
+          pcode: exception.code,
+          description: exception.message,
+          details: exception.meta,
+        });
+        break;
+      }
+      case 'P2001': {
+        response.status(HttpStatus.BAD_REQUEST).json({
+          message: `Update on non-existent record @ ${request.url}`,
+          pcode: exception.code,
+          description: exception.message,
+          details: exception.meta,
+        });
+        break;
+      }
+      case 'P2014': {
+        response.status(HttpStatus.BAD_REQUEST).json({
+          message: `Deleting record that has required relationships @ ${request.url}`,
+          pcode: exception.code,
           description: exception.message,
           details: exception.meta,
         });
@@ -29,6 +75,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       default:
         response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
           message: `Internal server error @ ${request.url}`,
+          pcode: exception.code,
           description: exception.message,
           details: exception.meta,
         });
