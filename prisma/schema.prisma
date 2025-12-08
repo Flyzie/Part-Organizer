@@ -1,24 +1,89 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider        = "prisma-client-js"
-  output          = "../generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id         String     @default(uuid(7)) @id
-  createdAt  DateTime   @default(now())
-  email      String     @unique 
-  password   String
-  title      String?
-  profilePic String?
-  name       String
+  id             String           @id @default(uuid(7))
+  createdAt      DateTime         @default(now())
+  email          String           @unique
+  password       String
+  title          String?
+  profilePic     String?
+  name           String
+  userComponents UserComponents[]
+  projects       Project[]
+}
+
+model Component {
+  id                  Int                   @id @default(autoincrement())
+  name                String
+  image               String?
+  categories          Category[]
+  componentAttributes ComponentAttributes[]
+  userComponents      UserComponents[]
+  projectComponents   ProjectComponents[]
+}
+
+model Category {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  component Component[]
+}
+
+model Attribute {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique
+  symbol              String?
+  dataType            String?
+  isDisplayed         Boolean?              @default(false)
+  componentAttributes ComponentAttributes[]
+}
+
+model Project {
+  id                Int                 @id @default(autoincrement())
+  name              String
+  image             String?
+  description       String?
+  quantity          Int                 @default(0)
+  isPrivate         Boolean?            @default(false)
+  createdAt         DateTime            @default(now())
+  user              User                @relation(fields: [userId], references: [id])
+  userId            String
+  projectComponents ProjectComponents[]
+}
+
+model ComponentAttributes {
+  component   Component @relation(fields: [componentId], references: [id])
+  componentId Int
+  attribute   Attribute @relation(fields: [attributeId], references: [id])
+  attributeId Int
+  value       Int       @default(0)
+
+  @@id([componentId, attributeId])
+}
+
+model UserComponents {
+  component   Component @relation(fields: [componentId], references: [id])
+  componentId Int
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  quantity    Int       @default(0)
+
+  @@id([componentId, userId])
+}
+
+model ProjectComponents {
+  component   Component @relation(fields: [componentId], references: [id])
+  componentId Int
+  project     Project   @relation(fields: [projectId], references: [id])
+  projectId   Int
+  quantity    Int       @default(0)
+
+  @@id([componentId, projectId])
 }
