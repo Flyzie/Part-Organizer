@@ -10,7 +10,7 @@ const saltOrRounds = 10;
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async getUser(uuid: string): Promise<User> {
+  async getUserByUUID(uuid: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: {
         id: uuid,
@@ -20,6 +20,22 @@ export class UserService {
     if (!user) {
       throw new NotFoundException({
         message: 'User not found!',
+      });
+    }
+
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException({
+        message: 'User with this email not found!',
       });
     }
 
