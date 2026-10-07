@@ -24,8 +24,12 @@ COPY package*.json ./
 
 RUN pnpm install 
 
+COPY . .
+
 # Use production node environment by default.
 ENV PORT=3000
 
 # Expose the port that the application listens on.
 EXPOSE 3000
+
+CMD [ "pnpm", "run", "start:dev"]
